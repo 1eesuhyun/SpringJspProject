@@ -7,7 +7,12 @@ const useRecipeStore=defineStore('recipe',{
 		curpage:1,
 		startPage:0,
 		totalPage:0,
-		endPage:0
+		endPage:0,
+		detail:{
+			vo:{},
+			tList:[],
+			iList:[]
+		}
 	}),
 	getters:{
 		range:(state)=>{
@@ -21,10 +26,10 @@ const useRecipeStore=defineStore('recipe',{
 	},
 	actions:{
 		// default 매개변수 => recipeListData() recipeListData(2)
-		async recipeListData(page=this.curpage){
+		async recipeListData(){
 			const res=await api.get('/recipe/list_vue/',{
 				params:{
-					page:page
+					page:this.curpage
 				}
 			})
 			this.setPageData(res.data)
@@ -39,8 +44,11 @@ const useRecipeStore=defineStore('recipe',{
 		pageChange(page){
 			this.curpage=page
 			this.recipeListData()
-		}
+		},
 		// 상세보기
-		
+		async recipeDetailData(no){
+			const res=await api.get(`/recipe/detail_vue/?no=${no}`)
+			this.detail=res.data
+		}
 	}
 })

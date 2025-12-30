@@ -16,7 +16,7 @@ public class RecipeRestController {
 	private final RecipeService rservice;
 	
 	@GetMapping("/recipe/list_vue/")
-	public ResponseEntity<Map> recipe_list_vue(@RequestParam("page")int page,Model model)
+	public ResponseEntity<Map> recipe_list_vue(@RequestParam("page")int page)
 	{
 		Map map=new HashMap();
 		try
@@ -36,6 +36,33 @@ public class RecipeRestController {
 			map.put("endPage", endPage);
 			map.put("totalpage", totalpage);
 			// json
+		}catch(Exception ex)
+		{
+			ex.printStackTrace();
+			return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(map,HttpStatus.OK);
+	}
+	@GetMapping("/recipe/detail_vue/")
+	public ResponseEntity<Map> recipe_detail_vue(@RequestParam("no")int no)
+	{
+		Map map=new HashMap();
+		try
+		{
+			RecipeDetailVO vo=rservice.recipeDetailData(no);
+			String[] datas=vo.getFoodmake().split("\n");
+			List<String> tList=new ArrayList<String>();
+			List<String> iList=new ArrayList<String>();
+			for(String s:datas)
+			{
+				StringTokenizer st=new StringTokenizer(s,"^");
+				tList.add(st.nextToken());
+				iList.add(st.nextToken());
+			}
+			
+			map.put("vo", vo);
+			map.put("tList", tList);
+			map.put("iList", iList);
 		}catch(Exception ex)
 		{
 			ex.printStackTrace();
