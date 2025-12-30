@@ -1,0 +1,46 @@
+const {defineStore}=Pinia
+// replyStore
+const useRecipeStore=defineStore('recipe',{
+	// store : 공통 사용 변수, props
+	state:()=>({
+		list:[],
+		curpage:1,
+		startPage:0,
+		totalPage:0,
+		endPage:0
+	}),
+	getters:{
+		range:(state)=>{
+			const arr=[]
+			for(let i=state.startPage;i<=state.endPage;i++)
+			{
+				arr.push(i)
+			}
+			return arr
+		}
+	},
+	actions:{
+		// default 매개변수 => recipeListData() recipeListData(2)
+		async recipeListData(page=this.curpage){
+			const res=await api.get('/recipe/list_vue/',{
+				params:{
+					page:page
+				}
+			})
+			this.setPageData(res.data)
+		},
+		setPageData(data){
+			this.list=data.list
+			this.curpage=data.curpage
+			this.startPage=data.startPage
+			this.totalpage=data.totalpage
+			this.endPage=data.endPage
+		},
+		pageChange(page){
+			this.curpage=page
+			this.recipeListData()
+		}
+		// 상세보기
+		
+	}
+})

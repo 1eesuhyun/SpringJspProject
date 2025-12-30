@@ -1,0 +1,46 @@
+package com.sist.web.controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import java.util.*;
+import com.sist.web.service.*;
+import com.sist.web.vo.*;
+
+@RestController
+@RequiredArgsConstructor
+public class RecipeRestController {
+	private final RecipeService rservice;
+	
+	@GetMapping("/recipe/list_vue/")
+	public ResponseEntity<Map> recipe_list_vue(@RequestParam("page")int page,Model model)
+	{
+		Map map=new HashMap();
+		try
+		{
+			List<RecipeVO> list=rservice.recipeListData((page-1)*12);
+			int totalpage=rservice.recipeTotalPage();
+			
+			final int block=10;
+			int startPage=((page-1)/block*block)+1;
+			int endPage=((page-1)/block*block)+block;
+			if(endPage>totalpage)
+				endPage=totalpage;
+				
+			map.put("list", list);
+			map.put("curpage", page);
+			map.put("startPage", startPage);
+			map.put("endPage", endPage);
+			map.put("totalpage", totalpage);
+			// json
+		}catch(Exception ex)
+		{
+			ex.printStackTrace();
+			return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(map,HttpStatus.OK);
+	}
+}
