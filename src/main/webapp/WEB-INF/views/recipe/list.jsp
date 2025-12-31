@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +30,17 @@ p{
 </style>
 </head>
 <body>
- <div class="container">
+<div class="container" style="margin-top: 10px;">
+ <div class="row text-right">
+  <c:if test="${sessionScope.id==null }">
+  <a href="/member/login" class="btn btn-sm btn-info">로그인</a>
+  </c:if>
+  <c:if test="${sessionScope.id!=null }">
+  <a href="/member/logout" class="btn btn-sm btn-danger">로그아웃</a>
+  </c:if>
+ </div>
+</div>
+ <div class="container" id="list_app">
   <div class="row">
    <div class="col-md-3" v-for="(vo,index) in store.list" :key="index">
     <div class="thumbnail">
@@ -69,7 +80,7 @@ p{
 	  }
   })
   recipeApp.use(createPinia())
-  recipeApp.mount(".container")
+  recipeApp.mount("#list_app")
  </script>
 </body>
 </html>
